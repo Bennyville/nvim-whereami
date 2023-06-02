@@ -14,7 +14,7 @@ A neovim plugin that helps to point to a specific place inside your code. Inspir
 ## Features
 
 - Provides a reference to the exact location of your code.
-- Easy to use: just position your cursor on a method and run the command.
+- Easy to use: just position your cursor anywhere in your code and run the command.
 - Supported languages: PHP. (uses <file_path>:<line_number> in unsupported languages)
 
 ## Installation
