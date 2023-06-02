@@ -8,6 +8,8 @@ A neovim plugin that helps to point to a specific place inside your code. Useful
 - Easy to use: just position your cursor on a method and run the command.
 - Supported languages*: PHP.
 
+\* Whereami will just copy the line number in the current file, if a language is not supported.
+
 ## Installation
 
 ### Using [vim-plug](https://github.com/junegunn/vim-plug):
@@ -36,7 +38,7 @@ Position your cursor anywhere in your code and run:
 :Whereami
 ```
 
-This will copy a reference to your clipboard in a language specific format*, useful for pinpointing specific sections of code for discussion, feedback, or review.
+This will copy a reference to your clipboard in a language specific format, useful for pinpointing specific sections of code for discussion, feedback, or review.
 
 ## Requirements
 
@@ -51,4 +53,3 @@ Contributions are welcome! Please see [here](CONTRIBUTING.md) for details.
 
 [MIT](LICENSE)
 
-\* Whereami will just copy the line number in the current file.
