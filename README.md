@@ -12,29 +12,29 @@ A neovim plugin that helps to point to a specific place inside your code. Useful
 
 ### Using [vim-plug](https://github.com/junegunn/vim-plug):
 
-\```lua
+```lua
 Plug 'bennyville/whereami'
-\```
+```
 
 ### Using [Vundle](https://github.com/VundleVim/Vundle.vim):
 
-\```lua
+```lua
 Plugin 'bennyville/whereami'
-\```
+```
 
 ### Using [Packer](https://github.com/wbthomason/packer.nvim):
 
-\```lua
+```lua
 use { 'bennyville/whereami' }
-\```
+```
 
 ## Usage
 
 Position your cursor anywhere in your code and run:
 
-\```lua
+```lua
 :Whereami
-\```
+```
 
 This will copy a reference to your clipboard in a language specific format*, useful for pinpointing specific sections of code for discussion, feedback, or review.
 
@@ -51,4 +51,4 @@ Contributions are welcome! Please see [here](CONTRIBUTING.md) for details.
 
 [MIT](LICENSE)
 
-* Whereami will just copy the line number in the current file.
+\* Whereami will just copy the line number in the current file.
