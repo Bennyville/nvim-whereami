@@ -7,7 +7,7 @@ A neovim plugin that helps to point to a specific place inside your code. Inspir
   - [Features](#features)
   - [Installation](#installation)
   - [Usage](#usage)
-  - [Requirements](#requirements)
+      * [Requirements](#requirements)
   - [License](#license)
 
 ## Features
@@ -17,6 +17,11 @@ A neovim plugin that helps to point to a specific place inside your code. Inspir
 - Supported languages: PHP. (uses <file_path>:<line_number> in unsupported languages)
 
 ## Installation
+
+### Requirements
+
+- neovim
+- treesitter
 
 ### Using [vim-plug](https://github.com/junegunn/vim-plug):
 
@@ -51,11 +56,6 @@ vim.keymap.set('n', '<leader>cr', ':Whereami<CR>')
 ```
 
 This will copy a reference to your clipboard in a language specific format, useful for pinpointing specific sections of code for discussion, feedback, or review.
-
-## Requirements
-
-- neovim
-- treesitter
 
 ## License
 
