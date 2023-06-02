@@ -3,7 +3,7 @@ local ts_utils = require'nvim-treesitter.ts_utils'
 local php = {}
 
 function php.handle(root, node)
-	local method_name, class_name, namespace_name
+	local method_name, property_name, class_name, namespace_name
 
 	while node do
 		local node_type = node:type()
@@ -12,6 +12,15 @@ function php.handle(root, node)
 			for _, child in ipairs(ts_utils.get_named_children(node)) do
 				if child:type() == 'name' then
 					method_name = ts_utils.get_node_text(child)[1]
+					break
+				end
+			end
+		elseif node_type == 'property_declaration' then
+			print(node_type)
+			for _, child in ipairs(ts_utils.get_named_children(node)) do
+				print(child:type())
+				if child:type() == 'property_element' then
+					property_name = ts_utils.get_node_text(child)[1]
 					break
 				end
 			end
@@ -27,16 +36,6 @@ function php.handle(root, node)
 		node = node:parent()
 	end
 
-	if not method_name then
-		print("Cursor is not positioned on a method.")
-		return
-	end
-
-	if not class_name then
-		print("Cursor is not positioned inside a class.")
-		return
-	end
-
 	for _, node in ipairs(ts_utils.get_named_children(root)) do
 		if node:type() == 'namespace_definition' then
 			for _, child in ipairs(ts_utils.get_named_children(node)) do
@@ -49,12 +48,21 @@ function php.handle(root, node)
 		end
 	end
 
-	if not namespace_name then
-		print("No namespace found in file.")
-		return
+	local reference = ''
+
+	if namespace_name then
+		reference = reference .. namespace_name .. '\\'
 	end
 
-	local reference = namespace_name .. '\\' .. class_name .. '::' .. method_name .. '()'
+	if class_name then
+		reference = reference .. class_name .. '::'
+	end
+
+	if method_name then
+		reference = reference .. method_name .. '()'
+	elseif property_name then
+		reference = reference .. property_name
+	end
 
 	return reference
 end
