@@ -1,6 +1,6 @@
 # whereami
 
-A Neovim plugin that helps to point to a specific place inside your code. Useful for discussion, feedback, code reviews, and collaboration.
+A neovim plugin that helps to point to a specific place inside your code. Useful for discussion, feedback, code reviews, and collaboration.
 
 ## Features
 
@@ -12,19 +12,19 @@ A Neovim plugin that helps to point to a specific place inside your code. Useful
 
 ### Using [vim-plug](https://github.com/junegunn/vim-plug):
 
-\```vim
+\```lua
 Plug 'bennyville/whereami'
 \```
 
 ### Using [Vundle](https://github.com/VundleVim/Vundle.vim):
 
-\```vim
+\```lua
 Plugin 'bennyville/whereami'
 \```
 
-### Using [Packer](https://github.com/VundleVim/Vundle.vim):
+### Using [Packer](https://github.com/wbthomason/packer.nvim):
 
-\```vim
+\```lua
 use { 'bennyville/whereami' }
 \```
 
@@ -32,7 +32,7 @@ use { 'bennyville/whereami' }
 
 Position your cursor anywhere in your code and run:
 
-\```vim
+\```lua
 :Whereami
 \```
 
@@ -40,8 +40,8 @@ This will copy a reference to your clipboard in a language specific format*, use
 
 ## Requirements
 
-- Neovim
-- Tree-sitter PHP parser
+- neovim
+- treesitter
 
 ## Contributing
 
