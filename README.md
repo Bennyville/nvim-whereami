@@ -2,6 +2,15 @@
 
 A neovim plugin that helps to point to a specific place inside your code. Inspired by Intellijs "Copy reference" function. Useful for discussion, feedback, code reviews, and collaboration.
 
+## Table of contents
+
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Requirements](#requirements)
+  - [Contributing](#contributing)
+  - [License](#license)
+
 ## Features
 
 - Provides a reference to the exact location of your code.
