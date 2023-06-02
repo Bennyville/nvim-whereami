@@ -8,10 +8,6 @@ A neovim plugin that helps to point to a specific place inside your code. Inspir
 - Easy to use: just position your cursor on a method and run the command.
 - Supported languages: PHP. (uses <file_path>:<line_number> in unsupported languages)
 
-\* Whereami will just copy the line number in the current file, if a language is not supported.
-
-\* Whereami will just copy the line number in the current file, if a language is not supported.
-
 ## Installation
 
 ### Using [vim-plug](https://github.com/junegunn/vim-plug):
