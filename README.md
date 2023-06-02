@@ -8,7 +8,6 @@ A neovim plugin that helps to point to a specific place inside your code. Inspir
   - [Installation](#installation)
   - [Usage](#usage)
   - [Requirements](#requirements)
-  - [Contributing](#contributing)
   - [License](#license)
 
 ## Features
@@ -57,10 +56,6 @@ This will copy a reference to your clipboard in a language specific format, usef
 
 - neovim
 - treesitter
-
-## Contributing
-
-Contributions are welcome! Please see [here](CONTRIBUTING.md) for details.
 
 ## License
 
