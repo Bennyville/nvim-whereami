@@ -1,65 +1,143 @@
-local parsers = require'nvim-treesitter.parsers'
+local parsers = require 'nvim-treesitter.parsers'
+local fs = require 'fs'
+local separators = require 'separators'
+local nodes = require 'nodes'
 
 local whereami = {}
 
-local lang_handlers = {
-	php = require'lang.php',
-}
+local function get_cursor_pos()
+	local cursor = vim.api.nvim_win_get_cursor(0)
 
-function whereami.get_root_dir()
-	local git_dir = vim.fn.finddir('.git', '.;')
-	local hg_dir = vim.fn.finddir('.hg', '.;')
+	return cursor[1] - 1, cursor[2]
+end
 
-	local vcs_dir = git_dir ~= "" and git_dir or hg_dir
+local function build_reference(code_reference, lang_separators, line_number)
+	local reference = ''
 
-	local vcs_root
+	local reference_order = {
+		'namespace',
+		'package',
+		'class',
+		'module',
+		'fn',
+		'method',
+		'property'
+	}
 
-	if vcs_dir == "" then
-		vcs_root = vim.fn.getcwd()
-	else
-		vcs_root = vim.fn.fnamemodify(vcs_dir, ':p:h:h')
+	for _, node_type in ipairs(reference_order) do
+		if code_reference[node_type] ~= nil then
+			if lang_separators[node_type] ~= nil then
+				reference = reference ..
+					lang_separators[node_type].prefix .. code_reference[node_type] .. lang_separators[node_type].suffix
+			else
+				reference = reference .. code_reference[node_type]
+			end
+		end
 	end
 
-	local file_path = vim.fn.expand('%:p')
-	local relative_path = string.sub(file_path, #vcs_root+2)
+	local has_namespace = false
 
-	return relative_path
+	for _, value in pairs(nodes.namespace_nodes) do
+		if code_reference[value] ~= nil then
+			has_namespace = true
+		end
+	end
+
+	if has_namespace == false then
+		local path = fs.get_root_dir()
+
+		if path ~= nil then
+			reference = path .. ':' .. reference
+		end
+	end
+
+	return reference .. ':' .. line_number
+end
+
+local function find_namespace_nodes(root)
+	local namespace_nodes = {}
+
+	for child, _ in root:iter_children() do
+		local node_type = child:type()
+
+		if nodes.namespace_nodes[node_type] ~= nil then
+			local namespace_node_type = nodes.namespace_nodes[node_type]
+			namespace_nodes[namespace_node_type] = child
+		end
+	end
+
+	return namespace_nodes
+end
+
+local function find_named_node(node)
+	for child, _ in node:iter_children() do
+		local child_type = child:type()
+
+		if child:named() and nodes.name_nodes[child_type] ~= nil then
+			return child
+		end
+	end
+end
+
+local function find_reference_nodes(current_node)
+	local reference_nodes = {}
+
+	while current_node do
+		local current_node_type = current_node:type()
+
+		if nodes.reference_nodes[current_node_type] ~= nil then
+			local reference_node_type = nodes.reference_nodes[current_node_type]
+
+			reference_nodes[reference_node_type] = current_node
+		end
+
+		current_node = current_node:parent()
+	end
+
+	return reference_nodes
+end
+
+local function get_reference()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local lang = parsers.get_buf_lang(bufnr)
+
+	local tree = parsers.get_parser(bufnr, lang):parse()[1]
+
+	local root = tree:root()
+
+	local row, col = get_cursor_pos()
+
+	local current_node = root:named_descendant_for_range(row, col, row, col)
+
+	local code_reference = {}
+
+	local reference_nodes = find_reference_nodes(current_node)
+
+	for reference_node_type, reference_node in pairs(reference_nodes) do
+		if code_reference[reference_node_type] == nil then
+			local named_node = find_named_node(reference_node)
+			code_reference[reference_node_type] = vim.treesitter.get_node_text(named_node, 0)
+		end
+	end
+
+	local namespace_nodes = find_namespace_nodes(root)
+
+	for namespace_node_type, namespace_node in pairs(namespace_nodes) do
+		if code_reference[namespace_node_type] == nil then
+			local named_node = find_named_node(namespace_node)
+			code_reference[namespace_node_type] = vim.treesitter.get_node_text(named_node, 0)
+		end
+	end
+
+	if separators[lang] == nil then
+		lang = 'default'
+	end
+
+	return build_reference(code_reference, separators[lang], row + 1)
 end
 
 function whereami.copy_reference()
-	local bufnr = vim.api.nvim_get_current_buf()
-	local cursor = vim.api.nvim_win_get_cursor(0)
-	local row, col = cursor[1] - 1, cursor[2]
-
-	local lang = parsers.get_buf_lang(bufnr)
-
-	local handler = lang_handlers[lang]
-
-	if not handler or type(handler.handle) ~= 'function' then
-		print("Handler for " .. lang .. " not correctly implemented or not available.")
-		return
-	end
-
-	if not parsers.has_parser(lang) then
-		print("Parser for " .. lang .. " is not available.")
-		return
-	end
-
-	local tree = parsers.get_parser(bufnr, lang):parse()[1]
-	local root = tree:root()
-
-	local node = root:named_descendant_for_range(row, col, row, col)
-
-	if not node then
-		print("No node found at cursor.")
-		return
-	end
-
-	local root_dir = whereami.get_root_dir()
-	local code_reference = handler.handle(root, node)
-	local line_number = row+1
-
-	local reference = root_dir .. ':' .. code_reference .. ':' .. line_number
+	local reference = get_reference()
 
 	vim.fn.setreg('*', reference)
 
