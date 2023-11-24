@@ -1,6 +1,8 @@
-# whereami
+# whereami [work in progress]
 
-A neovim plugin that helps to point to a specific place inside your code. Inspired by Intellijs "Copy reference" function. Useful for discussion, feedback, code reviews, and collaboration.
+A neovim plugin that helps to point to a specific place inside your code. Inspired by Intellijs "Copy reference" function. Useful for discussion, feedback, code reviews, and collaboration
+
+**The plugin is still work in progress. It already works in many languages, but for some it will probably not yet produce a good result. I am trying to develop a universal solution for all languages. I love to hear your feedback!**
 
 ## Table of contents
 
@@ -14,14 +16,14 @@ A neovim plugin that helps to point to a specific place inside your code. Inspir
 
 - Provides a reference to the exact location of your code.
 - Easy to use: just position your cursor anywhere in your code and run the command.
-- Supported languages: PHP. (uses <file_path>:<line_number> in unsupported languages)
+- Works for all languages, someday (work in progress)
 
 ## Installation
 
 ### Requirements
 
 - neovim
-- treesitter
+- treesitter (+ language parser)
 
 ### Using [vim-plug](https://github.com/junegunn/vim-plug):
 
