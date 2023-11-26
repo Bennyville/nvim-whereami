@@ -97,13 +97,28 @@ local function find_reference_nodes(current_node)
 	return reference_nodes
 end
 
+local function safe_treesitter_parse(bufnr, lang)
+    if not parsers.has_parser(lang) then
+        error("No Treesitter parser available for current buffer's language: " .. lang)
+    end
+
+    local parser = parsers.get_parser(bufnr, lang)
+
+    local tree = parser:parse()
+
+    if not tree or #tree == 0 then
+        error("Failed to parse buffer with Treesitter. Language: " .. lang)
+    end
+
+    return tree[1]
+end
+
 local function get_reference()
 	local bufnr = vim.api.nvim_get_current_buf()
-	local lang = parsers.get_buf_lang(bufnr)
+    local lang = parsers.get_buf_lang(bufnr)
 
-	local tree = parsers.get_parser(bufnr, lang):parse()[1]
-
-	local root = tree:root()
+    local tree = safe_treesitter_parse(bufnr, lang)
+    local root = tree:root()
 
 	local row, col = get_cursor_pos()
 
@@ -137,7 +152,12 @@ local function get_reference()
 end
 
 function whereami.copy_reference()
-	local reference = get_reference()
+	local success, reference = pcall(get_reference)
+
+    if not success then
+        vim.api.nvim_err_writeln("Error getting reference: " .. reference)
+        return
+    end
 
 	vim.fn.setreg('*', reference)
 
